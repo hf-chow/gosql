@@ -55,6 +55,21 @@ func (node BNode) getOffset(idx uint16) uint16 {
 
 func (node BNode) setOffset(idx uint16, offset uint16)
 
+func (node BNode) kvPos(idx uint16) uint16 {
+	return HEADER + 8*node.nkeys() + 2*node.nkeys() + node.getOffset(idx)
+}
+
+func (node BNode) getKey(idx uint16) []byte {
+	pos := node.kvPos(idx)
+	klen := binary.LittleEndian.Uint16(node[pos:])
+	return node[pos+4:][:klen]
+}
+
+func (node BNode) getVal(idx uint16) []byte
+
+func (node BNode) nbytes() uint16 {
+	return node.kvPos(node.nkeys())
+}
 
 func init() {
 	node1max := HEADER + 8 + 2 + 4 + BTREE_MAX_KEY_SIZE + BTREE_MAX_VAL_SIZE

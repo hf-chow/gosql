@@ -42,6 +42,20 @@ func (node BNode) getPtr(idx uint16) uint16 {
 
 func (node BNode) setPtr(idx uint16, val uint64)
 
+func offsetsPos(node BNode, idx uint16) uint16 {
+	return HEADER + 8*node.nkeys() + 2*(idx-1)
+}
+
+func (node BNode) getOffset(idx uint16) uint16 {
+	if idx == 0 {
+		return 0
+	}
+	return binary.LittleEndian.Uint16(node[offsetsPos(node, idx):])
+}
+
+func (node BNode) setOffset(idx uint16, offset uint16)
+
+
 func init() {
 	node1max := HEADER + 8 + 2 + 4 + BTREE_MAX_KEY_SIZE + BTREE_MAX_VAL_SIZE
 	if (node1max <= BTREE_PAGE_SIZE) {
